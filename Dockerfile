@@ -19,7 +19,7 @@ RUN echo 'export PATH="$VIRTUAL_ENV/bin:$PATH"' >> /home/vscode/.bashrc
 
 RUN /home/vscode/venv/bin/pip install --upgrade pip 
 
-COPY docker-requirements.txt /home/vscode/venv/requirements.txt
+COPY requirements.txt /home/vscode/venv/requirements.txt
 
 RUN /home/vscode/venv/bin/pip install --no-cache-dir -r /home/vscode/venv/requirements.txt
 
