@@ -13,3 +13,4 @@ build==1.2.2
 twine==6.1.0
 mypy==1.15.0
 pylint==3.3.6
+prometheus_client==0.21.1
