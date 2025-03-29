@@ -12,7 +12,7 @@ jobs:
     env:
       DOCKER_USERNAME: onbbu
       DOCKER_VERSION: dev
-      DOCKER_NAME: python
+      DOCKER_NAME: etcd
 
     steps:
       - name: Checkout repository

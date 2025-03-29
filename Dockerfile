@@ -1,26 +1,16 @@
-FROM python:3.12-alpine
+FROM quay.io/coreos/etcd:v3.5.21 AS etcd-base
 
-RUN apk add --no-cache \
-    openssh-client git curl wget bash bash-completion shadow pv make build-base \
-    gcc musl-dev python3-dev \
-    && adduser -D -s /bin/bash vscode
+FROM busybox:latest
 
-USER vscode
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-RUN echo "source /usr/share/bash-completion/completions/git" >> /home/vscode/.bashrc
+COPY --from=etcd-base /usr/local/bin/etcd /usr/local/bin/etcd
+COPY --from=etcd-base /usr/local/bin/etcdctl /usr/local/bin/etcdctl
+COPY --from=etcd-base /usr/local/bin/etcdutl /usr/local/bin/etcdutl
 
-WORKDIR /workspaces
+EXPOSE 2379 2380
 
-RUN python3 -m venv /home/vscode/venv
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-RUN echo 'export VIRTUAL_ENV="/home/vscode/venv"' >> /home/vscode/.bashrc
-
-RUN echo 'export PATH="$VIRTUAL_ENV/bin:$PATH"' >> /home/vscode/.bashrc
-
-RUN /home/vscode/venv/bin/pip install --upgrade pip 
-
-COPY requirements.txt /home/vscode/venv/requirements.txt
-
-RUN /home/vscode/venv/bin/pip install --no-cache-dir -r /home/vscode/venv/requirements.txt
-
-CMD ["/bin/bash"]
+CMD ["/usr/local/bin/etcd"]
