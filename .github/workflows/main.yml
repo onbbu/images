@@ -3,7 +3,7 @@ name: Publish Docker Image
 on:
   push:
     branches:
-      - python 
+      - etcd 
 
 jobs:
   build-and-push:
