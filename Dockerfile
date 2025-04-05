@@ -1,26 +1,30 @@
-FROM python:3.12-alpine
+FROM node:22-bullseye
 
-RUN apk add --no-cache \
-    openssh-client git git-flow curl wget bash bash-completion shadow pv make build-base \
-    gcc musl-dev python3-dev \
-    && adduser -D -s /bin/bash vscode
+RUN apt-get update -qq && apt-get install -y -qq \
+    openjdk-17-jdk \
+    wget \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
 
-USER vscode
+ENV ANDROID_HOME=/usr/local/android-sdk
+ENV ANDROID_SDK_TOOLS=11076708 
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools
 
-RUN echo "source /usr/share/bash-completion/completions/git" >> /home/vscode/.bashrc
+RUN mkdir -p ${ANDROID_HOME} 
+RUN wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip -O /tmp/android-sdk.zip
+RUN unzip -q /tmp/android-sdk.zip -d /tmp/android-sdk
+RUN rm /tmp/android-sdk.zip
+RUN mkdir -p ${ANDROID_HOME}/cmdline-tools
+RUN mv /tmp/android-sdk/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest
+RUN yes | sdkmanager --licenses
+RUN sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
 
-WORKDIR /workspaces
+RUN wget -q https://services.gradle.org/distributions/gradle-8.12.1-bin.zip -O /tmp/gradle.zip && \
+    unzip -q /tmp/gradle.zip -d /opt && \
+    rm /tmp/gradle.zip && \
+    ln -s /opt/gradle-8.12.1/bin/gradle /usr/bin/gradle
 
-RUN python3 -m venv /home/vscode/venv
+RUN npm install -g @capacitor/cli
 
-RUN echo 'export VIRTUAL_ENV="/home/vscode/venv"' >> /home/vscode/.bashrc
-
-RUN echo 'export PATH="$VIRTUAL_ENV/bin:$PATH"' >> /home/vscode/.bashrc
-
-RUN /home/vscode/venv/bin/pip install --upgrade pip 
-
-COPY requirements.txt /home/vscode/venv/requirements.txt
-
-RUN /home/vscode/venv/bin/pip install --no-cache-dir -r /home/vscode/venv/requirements.txt
-
-CMD ["/bin/bash"]
+WORKDIR /workspace
