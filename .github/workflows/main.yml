@@ -3,7 +3,7 @@ name: Publish Docker Image
 on:
   push:
     branches:
-      - python 
+      - sandbox 
 
 jobs:
   build-and-push:
@@ -11,8 +11,8 @@ jobs:
 
     env:
       DOCKER_USERNAME: onbbu
-      DOCKER_VERSION: dev
-      DOCKER_NAME: python
+      DOCKER_VERSION: base
+      DOCKER_NAME: sandbox
 
     steps:
       - name: Checkout repository

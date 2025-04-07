@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  sandobx:
+    image: onbbu/sandobx
+    ports:
+      - "8080:8080"
+
+    volumes:
+      - ./config.yaml:/home/vscode/.config/code-server/config.yaml
+
+  coder:
+    image: ghcr.io/coder/coder:v2.20.2
+    privileged: true
+    ports:
+      - "7080:7080"
+
+    volumes:
+      - coder-data:/home/coder
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    environment:
+      CODER_HTTP_ADDRESS: "0.0.0.0:7080"
+      CODER_ACCESS_URL: "http://localhost:7080"
+
+volumes:
+  coder-data:

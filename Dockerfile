@@ -1,26 +1,39 @@
-FROM python:3.12-alpine
+FROM debian:bookworm-slim
 
-RUN apk add --no-cache \
-    openssh-client git git-flow curl wget bash bash-completion shadow pv make build-base nodejs npm \
-    gcc musl-dev python3-dev \
-    && adduser -D -s /bin/bash vscode
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        openssh-client \
+        gcc git git-flow \
+        build-essential \
+        libffi-dev \
+        libssl-dev \
+        libpq-dev \
+        ca-certificates curl wget \
+        bash-completion nano && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN adduser --disabled-password --gecos "" vscode
+RUN mkdir -p /home/vscode/.config/code-server
+RUN chown -R vscode:vscode /home/vscode
+
+RUN echo "source /usr/share/bash-completion/completions/git" >>/home/vscode/.bashrc
+
+ENV CODE_SERVER_VERSION=4.98.2
+
+RUN wget https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server_${CODE_SERVER_VERSION}_amd64.deb -O /tmp/code-server.deb && \
+    dpkg -i /tmp/code-server.deb && \
+    rm /tmp/code-server.deb
+
+COPY config.yaml /home/vscode/.config/code-server/config.yaml
+RUN chown vscode:vscode /home/vscode/.config/code-server/config.yaml
 
 USER vscode
+WORKDIR /home/vscode
 
-RUN echo "source /usr/share/bash-completion/completions/git" >> /home/vscode/.bashrc
+ENV SHELL=/bin/bash
 
-WORKDIR /workspaces
+EXPOSE 8080
 
-RUN python3 -m venv /home/vscode/venv
+CMD ["code-server"]
 
-RUN echo 'export VIRTUAL_ENV="/home/vscode/venv"' >> /home/vscode/.bashrc
-
-RUN echo 'export PATH="$VIRTUAL_ENV/bin:$PATH"' >> /home/vscode/.bashrc
-
-RUN /home/vscode/venv/bin/pip install --upgrade pip 
-
-COPY requirements.txt /home/vscode/venv/requirements.txt
-
-RUN /home/vscode/venv/bin/pip install --no-cache-dir -r /home/vscode/venv/requirements.txt
-
-CMD ["/bin/bash"]
