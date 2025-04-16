@@ -1,6 +1,6 @@
 FROM node:23-slim
 
-RUN apt-get update && apt-get install -y git git-flow gcc musl-dev curl make wget bash-completion openssh-client python3 python3-pip    
+RUN apt-get update && apt-get install -y git git-flow gcc musl-dev curl make wget bash-completion openssh-client python3 python3-pip docker.io
 
 ENV SHELL=/bin/bash
 
