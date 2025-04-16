@@ -1,26 +1,11 @@
-FROM python:3.12-alpine
+FROM node:23-slim
 
-RUN apk add --no-cache \
-    openssh-client git git-flow curl wget bash bash-completion shadow pv make build-base nodejs npm \
-    gcc musl-dev python3-dev \
-    && adduser -D -s /bin/bash vscode
+RUN apt-get update && apt-get install -y git git-flow gcc musl-dev curl make wget bash-completion openssh-client python3 python3-pip    
 
-USER vscode
+ENV SHELL=/bin/bash
 
-RUN echo "source /usr/share/bash-completion/completions/git" >> /home/vscode/.bashrc
+RUN echo "source /usr/share/bash-completion/completions/git" >> /root/.bashrc
 
-WORKDIR /workspaces
+RUN npm install -g gitlab-ci-local
 
-RUN python3 -m venv /home/vscode/venv
-
-RUN echo 'export VIRTUAL_ENV="/home/vscode/venv"' >> /home/vscode/.bashrc
-
-RUN echo 'export PATH="$VIRTUAL_ENV/bin:$PATH"' >> /home/vscode/.bashrc
-
-RUN /home/vscode/venv/bin/pip install --upgrade pip 
-
-COPY requirements.txt /home/vscode/venv/requirements.txt
-
-RUN /home/vscode/venv/bin/pip install --no-cache-dir -r /home/vscode/venv/requirements.txt
-
-CMD ["/bin/bash"]
+WORKDIR /usr/src/app
