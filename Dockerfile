@@ -23,4 +23,6 @@ COPY requirements.txt /home/vscode/venv/requirements.txt
 
 RUN /home/vscode/venv/bin/pip install --no-cache-dir -r /home/vscode/venv/requirements.txt
 
+RUN npm install -g gitlab-ci-local
+
 CMD ["/bin/bash"]
