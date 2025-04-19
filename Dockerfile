@@ -1,7 +1,7 @@
 FROM python:3.12-alpine
 
 RUN apk add --no-cache \
-    openssh-client git git-flow curl wget bash bash-completion shadow pv make build-base nodejs npm \
+    openssh-client git git-flow curl wget bash bash-completion shadow pv make build-base nodejs npm docker-cli \
     gcc musl-dev python3-dev \
     && adduser -D -s /bin/bash vscode
 
