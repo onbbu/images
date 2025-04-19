@@ -5,6 +5,8 @@ RUN apk add --no-cache \
     gcc musl-dev python3-dev \
     && adduser -D -s /bin/bash vscode
 
+RUN npm install -g gitlab-ci-local
+
 USER vscode
 
 RUN echo "source /usr/share/bash-completion/completions/git" >> /home/vscode/.bashrc
@@ -22,7 +24,5 @@ RUN /home/vscode/venv/bin/pip install --upgrade pip
 COPY requirements.txt /home/vscode/venv/requirements.txt
 
 RUN /home/vscode/venv/bin/pip install --no-cache-dir -r /home/vscode/venv/requirements.txt
-
-RUN npm install -g gitlab-ci-local
 
 CMD ["/bin/bash"]
