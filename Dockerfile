@@ -1,41 +1,39 @@
-FROM python:3.12.10-slim-bullseye
+FROM php:8.2-cli
 
-RUN apt update && \
-    apt install -y git git-flow curl wget bash bash-completion make docker.io nano && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*  
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
 
-RUN useradd -m vscode
+RUN apt-get update && apt-get install -y \
+    unzip \
+    curl \
+    git bash bash-completion \
+    zip \
+    libzip-dev \
+    libcurl4-openssl-dev \
+    libonig-dev \
+    libxml2-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV SHELL=/bin/bash
+ENV PATH="/home/vscode/.composer/vendor/bin:${PATH}"
+
+RUN docker-php-ext-install zip curl mbstring xml pdo pdo_mysql
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && apt-get clean
 
 RUN echo "source /usr/share/bash-completion/completions/git" >> /home/vscode/.bashrc
 
-USER vscode
-WORKDIR /home/vscode
+USER $USERNAME
 
-ENV NODE_VERSION_22=22.14.0
-ENV NVM_DIR=/home/vscode/.nvm
+RUN composer global require friendsofphp/php-cs-fixer
 
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+WORKDIR /app
 
-RUN . "$NVM_DIR/nvm.sh" && nvm install $NODE_VERSION_22 
-RUN . "$NVM_DIR/nvm.sh" && nvm alias default $NODE_VERSION_22 && nvm use $NODE_VERSION_22
+SHELL ["/bin/bash", "-c"]
 
-RUN echo 'export NVM_DIR="/home/vscode/.nvm"' >> /home/vscode/.bashrc
-RUN echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/vscode/.bashrc
-RUN echo 'export PATH="$NVM_DIR/versions/node/$(nvm version default)/bin:$PATH"' >> /home/vscode/.bashrc
-
-RUN . "$NVM_DIR/nvm.sh" && npm install -g gitlab-ci-local
-
-RUN python3 -m venv /home/vscode/venv
-
-RUN echo 'export VIRTUAL_ENV="/home/vscode/venv"' >> /home/vscode/.bashrc
-
-RUN echo 'export PATH="$VIRTUAL_ENV/bin:$PATH"' >> /home/vscode/.bashrc
-
-RUN /home/vscode/venv/bin/pip install --upgrade pip 
-
-COPY requirements.txt /home/vscode/venv/requirements.txt
-
-RUN /home/vscode/venv/bin/pip install --no-cache-dir -r /home/vscode/venv/requirements.txt
-
-CMD ["/bin/bash"]
+CMD ["php", "-a"]
