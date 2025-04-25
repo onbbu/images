@@ -32,6 +32,8 @@ USER $USERNAME
 
 RUN composer global require friendsofphp/php-cs-fixer
 
+RUN composer global require laravel/installer
+
 WORKDIR /app
 
 SHELL ["/bin/bash", "-c"]
