@@ -9,13 +9,17 @@ RUN apt-get update && \
         libssl-dev \
         libpq-dev \
         ca-certificates curl wget \
-        bash-completion nano && \
+        bash-completion nano sudo && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN adduser --disabled-password --gecos "" vscode
 RUN mkdir -p /home/vscode/.config/code-server
 RUN chown -R vscode:vscode /home/vscode
+
+RUN usermod -aG sudo vscode
+
+RUN echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 RUN echo "source /usr/share/bash-completion/completions/git" >>/home/vscode/.bashrc
 
