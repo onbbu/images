@@ -38,4 +38,13 @@ COPY requirements.txt /home/vscode/venv/requirements.txt
 
 RUN /home/vscode/venv/bin/pip install --no-cache-dir -r /home/vscode/venv/requirements.txt
 
+EXPOSE 22
+EXPOSE 3000
+EXPOSE 3001
+EXPOSE 5173
+EXPOSE 5174
+EXPOSE 8000
+EXPOSE 8001
+EXPOSE 8080
+
 CMD ["/bin/bash"]
