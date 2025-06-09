@@ -3,7 +3,7 @@ name: Publish Docker Image
 on:
   push:
     branches:
-      - python 
+      - j21 
 
 jobs:
   build-and-push:
@@ -11,15 +11,15 @@ jobs:
 
     env:
       DOCKER_USERNAME: onbbu
-      DOCKER_VERSION: dev
-      DOCKER_NAME: python
+      DOCKER_VERSION: j21
+      DOCKER_NAME: workspaces
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
