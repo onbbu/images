@@ -3,7 +3,7 @@ name: Publish Docker Image
 on:
   push:
     branches:
-      - j21 
+      - node 
 
 jobs:
   build-and-push:
@@ -11,7 +11,7 @@ jobs:
 
     env:
       DOCKER_USERNAME: onbbu
-      DOCKER_VERSION: j21
+      DOCKER_VERSION: node
       DOCKER_NAME: workspaces
 
     steps:

@@ -1,2 +1,2 @@
 build:
-	docker build -t onbbu/workspaces:j21 .
+	docker build -t onbbu/workspaces:node .

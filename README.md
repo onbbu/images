@@ -1,1 +1,1 @@
-docker pull onbbu/workspaces:j21
+docker pull onbbu/workspaces:node

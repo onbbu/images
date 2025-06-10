@@ -2,6 +2,7 @@ FROM debian:12
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        python3 python3-dev python3-pip \
         openssh-client \
         gcc git git-flow \
         build-essential \
@@ -9,7 +10,7 @@ RUN apt-get update && \
         libssl-dev \
         libpq-dev \
         ca-certificates curl wget \
-        bash-completion nano sudo zip && \
+        bash-completion nano sudo && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -34,24 +35,20 @@ RUN chown vscode:vscode /home/vscode/.config/code-server/config.yaml
 
 USER vscode
 WORKDIR /home/vscode
+
+ENV NODE_VERSION_22=22.14.0
+ENV NVM_DIR=/home/vscode/.nvm
+
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+RUN . "$NVM_DIR/nvm.sh" && nvm install $NODE_VERSION_22
+RUN . "$NVM_DIR/nvm.sh" && nvm alias default $NODE_VERSION_22 && nvm use $NODE_VERSION_22
+RUN echo 'export NVM_DIR="/home/vscode/.nvm"' >> /home/vscode/.bashrc
+RUN echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/vscode/.bashrc
+RUN echo 'export PATH="$NVM_DIR/versions/node/$(nvm version default)/bin:$PATH"' >> /home/vscode/.bashrc
+
+RUN curl -fsSL https://bun.sh/install | bash
+
 ENV SHELL=/bin/bash
-
-RUN code-server --install-extension vscjava.vscode-java-pack
-RUN code-server --install-extension vscjava.vscode-spring-initializr
-RUN code-server --install-extension streetsidesoftware.code-spell-checker
-RUN code-server --install-extension eamodio.gitlens
-
-ENV MAVEN_VERSION=3.9.10
-
-RUN curl -s "https://get.sdkman.io" | bash
-
-RUN bash -c "source /home/vscode/.sdkman/bin/sdkman-init.sh && sdk install java 21-tem"
-RUN bash -c "source /home/vscode/.sdkman/bin/sdkman-init.sh && sdk install maven ${MAVEN_VERSION}"
-
-RUN bash -c "source /home/vscode/.sdkman/bin/sdkman-init.sh && sdk flush archives && sdk flush temp"
-
-RUN bash -c "source /home/vscode/.sdkman/bin/sdkman-init.sh && java -version"
-RUN bash -c "source /home/vscode/.sdkman/bin/sdkman-init.sh && mvn -v"
 
 EXPOSE 7000
 
