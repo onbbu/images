@@ -11,8 +11,8 @@ jobs:
 
     env:
       DOCKER_USERNAME: onbbu
-      DOCKER_VERSION: dev
-      DOCKER_NAME: python
+      DOCKER_VERSION: python
+      DOCKER_NAME: workspaces
 
     steps:
       - name: Checkout repository
