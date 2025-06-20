@@ -35,6 +35,12 @@ RUN chown vscode:vscode /home/vscode/.config/code-server/config.yaml
 
 USER vscode
 WORKDIR /home/vscode
+ENV SHELL=/bin/bash
+
+RUN code-server --install-extension ms-python.python
+RUN code-server --install-extension ms-python.black-formatter
+RUN code-server --install-extension ms-python.mypy-type-checker
+RUN code-server --install-extension ms-python.autopep8
 
 ENV NODE_VERSION_22=22.14.0
 ENV NVM_DIR=/home/vscode/.nvm
@@ -46,7 +52,6 @@ RUN echo 'export NVM_DIR="/home/vscode/.nvm"' >> /home/vscode/.bashrc
 RUN echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/vscode/.bashrc
 RUN echo 'export PATH="$NVM_DIR/versions/node/$(nvm version default)/bin:$PATH"' >> /home/vscode/.bashrc
 
-ENV SHELL=/bin/bash
 
 EXPOSE 7000
 
