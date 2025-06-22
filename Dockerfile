@@ -23,6 +23,10 @@ RUN echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 RUN echo "source /usr/share/bash-completion/completions/git" >>/home/vscode/.bashrc
 
+RUN wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+RUN chmod u+x cloudflared-linux-amd64
+RUN mv cloudflared-linux-amd64 /usr/local/bin/cloudflared
+
 ENV CODE_SERVER_VERSION=4.100.3
 
 RUN wget https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server_${CODE_SERVER_VERSION}_amd64.deb -O /tmp/code-server.deb && \
