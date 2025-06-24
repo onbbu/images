@@ -2,7 +2,7 @@ FROM debian:12
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        openssh-client \
+        openssh-client openssh-server \
         gcc git git-flow \
         build-essential \
         libffi-dev unzip \
