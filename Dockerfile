@@ -3,7 +3,7 @@ FROM debian:12
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         python3 python3-dev python3-pip \
-        openssh-client \
+        openssh-client openssh-server \
         gcc git git-flow \
         build-essential \
         libffi-dev unzip \
@@ -23,6 +23,10 @@ RUN usermod -aG sudo vscode
 RUN echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 RUN echo "source /usr/share/bash-completion/completions/git" >>/home/vscode/.bashrc
+
+RUN wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+RUN chmod u+x cloudflared-linux-amd64
+RUN mv cloudflared-linux-amd64 /usr/local/bin/cloudflared
 
 ENV CODE_SERVER_VERSION=4.100.3
 
