@@ -53,6 +53,8 @@ RUN echo 'export PATH="$NVM_DIR/versions/node/$(nvm version default)/bin:$PATH"'
 RUN curl -fsSL https://bun.sh/install | bash
 
 ENV SHELL=/bin/bash
+ENV SERVICE_URL=https://marketplace.visualstudio.com/_apis/public/gallery
+ENV ITEM_URL=https://marketplace.visualstudio.com/items
 
 EXPOSE 7000
 
