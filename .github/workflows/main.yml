@@ -2,9 +2,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches: [nphp]
   pull_request:
-    branches: [main, develop]
+    branches: [nphp]
 
 permissions:
   contents: read
@@ -22,18 +22,7 @@ jobs:
 
       - name: Determine tag
         id: tag
-        run: |
-          case "${{ github.ref_name }}" in
-            "main")
-              echo "tag=latest" >> $GITHUB_OUTPUT
-              ;;
-            "develop")
-              echo "tag=develop" >> $GITHUB_OUTPUT
-              ;;
-            *)
-              echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-              ;;
-          esac
+        run: echo "tag=nphp" >> $GITHUB_OUTPUT
 
       - name: Build Docker image
         run: docker build --build-arg GH_TOKEN=${{ secrets.GITHUB_TOKEN }} -t ${{ env.DOCKER_IMAGE }}:${{ steps.tag.outputs.tag }} .
