@@ -9,7 +9,7 @@ RUN apt update && \
         libffi-dev unzip \
         libssl-dev \
         libpq-dev \
-        ca-certificates curl wget \
+        ca-certificates curl wget tar \
         apt-transport-https curl gnupg lsb-release ca-certificates \
         bash-completion nano sudo \
         systemd && \
@@ -65,9 +65,14 @@ RUN wget https://github.com/coder/code-server/releases/download/v${CODE_SERVER_V
     dpkg -i /tmp/code-server.deb && \
     rm /tmp/code-server.deb
 
+ENV CURSOR_HASH_VERSION=2f2737de9aa376933d975ae30290447c910fdf46
+
+RUN wget https://downloads.cursor.com/production/${CURSOR_HASH_VERSION}/linux/x64/cursor-reh-linux-x64.tar.gz \
+  && mkdir -p /home/vscode/.cursor-server \
+  && tar -xzf cursor-reh-linux-x64.tar.gz -C /home/vscode/.cursor-server
+
 COPY config.yaml /home/vscode/.config/code-server/config.yaml
 RUN chown vscode:vscode /home/vscode/.config/code-server/config.yaml
-
 
 USER vscode
 WORKDIR /home/vscode
