@@ -1,0 +1,105 @@
+# Cursor Rules
+
+## ⚠️ CRITICAL: NEVER USE QB-XXX IN COMMITS
+- QB-XXX is ONLY a placeholder in documentation
+- Use actual ticket numbers: QB-123, QB-456, etc.
+- If no ticket: use `main` or `develop`
+- Example: `docs(main): update commit message rules` ✅
+- Example: `docs(develop): update commit message rules` ✅
+- Wrong: `docs(QB-XXX): update commit message rules` ❌
+
+## Commit Message Generation
+When generating commit messages, ALWAYS follow this format:
+
+```
+type(scope): summary
+```
+
+**CRITICAL SCOPE RULES:**
+- **NEVER use QB-XXX** - this is just a placeholder in documentation
+- **Use actual ticket numbers**: QB-123, QB-456, etc.
+- **If no ticket available**: use `main` or `develop`
+- **Examples of valid scopes**: QB-123, QB-456, main, develop
+
+### MANDATORY RULES:
+1. **Type**: feat, fix, refactor, perf, docs, test, style, build, ci, chore, merge, revert
+2. **Scope**: 
+   - **Ticket branches**: MUST be actual ticket ID format: QB-123 (NOT QB-XXX)
+   - **Main/Develop branches**: Can use branch name: main, develop
+3. **Summary**: 
+   - English ONLY (translate Spanish to English)
+   - Imperative mood: add, fix, update (NOT "added", "fixing", "updating")
+   - Lowercase first letter
+   - No trailing period
+   - 1-50 characters
+
+### IMPORTANT:
+- NEVER use `QB-XXX` as scope - use actual ticket number like `QB-123`
+- If no ticket number available, use `main` or `develop` as scope
+- For documentation updates without ticket: `docs(main): update commit message rules`
+
+### FOR DOCUMENTATION UPDATES:
+- If updating commit rules: use `docs(main): update commit message rules`
+- If updating README: use `docs(main): update README`
+- If updating API docs: use `docs(main): update API documentation`
+- NEVER use `docs(QB-XXX):` for documentation updates
+
+### EXAMPLES:
+
+#### Ticket branches (feat/QB-123-description):
+✅ `docs(QB-123): update commit message rules in English`
+✅ `feat(QB-124): add user authentication`
+✅ `fix(QB-125): handle null pointer exception`
+✅ `refactor(QB-126): simplify auth validation`
+
+#### Main/Develop branches:
+✅ `chore(main): merge develop into main`
+✅ `chore(develop): update dependencies`
+✅ `merge(develop): pull request #123 from feature/QB-456`
+✅ `revert(main): revert commit abc123`
+
+#### ❌ WRONG:
+- `docs: actualizar reglas` (Spanish, no scope)
+- `feat(auth): add authentication` (generic scope)
+- `feat(QB-123): Add authentication` (capitalized)
+- `feat(QB-123): add authentication.` (trailing period)
+- `docs(QB-XXX): update rules` (using placeholder instead of real ticket)
+
+### COMMON MISTAKES TO AVOID:
+- ❌ `docs(QB-XXX): update commit message rules` 
+- ✅ `docs(main): update commit message rules`
+- ❌ `feat(QB-XXX): add new feature`
+- ✅ `feat(QB-123): add new feature` (with real ticket)
+- ✅ `feat(main): add new feature` (if no ticket)
+
+### TRANSLATION RULES:
+- "actualizar" → "update"
+- "agregar" → "add"
+- "corregir" → "fix"
+- "mejorar" → "improve"
+- "eliminar" → "remove"
+- "cambiar" → "change"
+
+### VALIDATION:
+The commit message MUST match one of these regex patterns:
+
+**For ticket branches:**
+```
+^(feat|fix|refactor|perf|docs|test|style|build|ci|chore|merge|revert)\(QB-\d+\): [^.\n]{1,50}$
+```
+
+**For main/develop branches:**
+```
+^(feat|fix|refactor|perf|docs|test|style|build|ci|chore|merge|revert)\(main|develop\): [^.\n]{1,50}$
+```
+
+**Combined pattern:**
+```
+^(feat|fix|refactor|perf|docs|test|style|build|ci|chore|merge|revert)\((QB-\d+|main|develop)\): [^.\n]{1,50}$
+```
+
+## Code Style
+- Use TypeScript/JavaScript best practices
+- Follow ESLint rules
+- Use meaningful variable names
+- Add comments for complex logic

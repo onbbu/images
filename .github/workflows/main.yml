@@ -1,33 +1,49 @@
-name: Publish Docker Image
+name: CI Pipeline
 
 on:
   push:
-    branches:
-      - python 
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  DOCKER_IMAGE: ghcr.io/${{ github.repository }}
 
 jobs:
-  build-and-push:
+  test:
     runs-on: ubuntu-latest
 
-    env:
-      DOCKER_USERNAME: onbbu
-      DOCKER_VERSION: python
-      DOCKER_NAME: workspaces
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+      - name: Determine tag
+        id: tag
+        run: |
+          case "${{ github.ref_name }}" in
+            "main")
+              echo "tag=latest" >> $GITHUB_OUTPUT
+              ;;
+            "develop")
+              echo "tag=develop" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+              ;;
+          esac
+
+      - name: Build Docker image
+        run: docker build --build-arg GH_TOKEN=${{ secrets.GITHUB_TOKEN }} -t ${{ env.DOCKER_IMAGE }}:${{ steps.tag.outputs.tag }} .
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          username: ${{ env.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker Image
-        run: |
-          docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_NAME }}:${{ env.DOCKER_VERSION }} .
-
-      - name: Push Docker Image
-        run: |
-          docker push ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_NAME }}:${{ env.DOCKER_VERSION }}
+      - name: Push Docker image
+        run: docker push ${{ env.DOCKER_IMAGE }}:${{ steps.tag.outputs.tag }}
