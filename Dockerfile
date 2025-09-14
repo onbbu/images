@@ -68,8 +68,6 @@ RUN wget https://github.com/coder/code-server/releases/download/v${CODE_SERVER_V
 COPY config.yaml /home/vscode/.config/code-server/config.yaml
 RUN chown vscode:vscode /home/vscode/.config/code-server/config.yaml
 
-COPY code-server.service /etc/systemd/system/
-COPY chisel.service /etc/systemd/system/
 
 USER vscode
 WORKDIR /home/vscode
@@ -92,4 +90,4 @@ ENV ITEM_URL=https://marketplace.visualstudio.com/items
 
 EXPOSE 7000 8080
 
-CMD ["/sbin/init"]
+CMD ["sh", "-c", "chisel server --port 8080 --reverse & code-server && wait"]
